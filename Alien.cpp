@@ -2,7 +2,7 @@
 #include "Alien.hpp"
 
 // Recebe a posição como parâmetro
-Alien::Alien (int m_type, int pos_x, int pos_y) : m_type(m_type), m_dir(1), m_speed(2), m_alien({pos_x, pos_y, 20, 15})
+Alien::Alien (int m_type, int pos_x, int pos_y) : m_type(m_type), m_dir(1), m_speed(2), m_alien({pos_x, pos_y, 20, 15}), m_alienTexture(nullptr)
 {
     switch (m_type)
     {
@@ -44,8 +44,15 @@ void Alien::move(int direction) {
 }
 
 void Alien::draw (SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, m_red, m_green, m_blue, 255);
-    SDL_RenderFillRect (renderer, &m_alien);
+    // SDL_SetRenderDrawColor(renderer, m_red, m_green, m_blue, 255);
+    // SDL_RenderFillRect (renderer, &m_alien);
+    // SDL_Texture* alienTexture = TextureManager::LoadTexture("src/images/sprites/Harkonen_teste_3.png", renderer);
+
+    if (!m_alienTexture) { // Load texture if it's not already loaded
+        m_alienTexture = getTexture("src/images/sprites/Harkonen_teste_3.png", renderer);
+    }
+    SDL_RenderCopy(renderer, m_alienTexture, NULL, &m_alien);
+
 }
 
 
@@ -61,4 +68,13 @@ int Alien::getType() const {
 
 void Alien::setPositionY(int y) {
     m_alien.y = y;
+}
+
+
+
+SDL_Texture* Alien::getTexture(const char* filepath, SDL_Renderer* renderer) {
+    SDL_Texture* alienTexture = TextureManager::LoadTexture(filepath, renderer);
+
+    return alienTexture;
+    // return TextureManager::LoadTexture(filepath, renderer);
 }

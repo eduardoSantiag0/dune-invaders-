@@ -14,7 +14,7 @@ public:
     };
     Laser();
     void move (Tipo tipo);
-    void draw(SDL_Renderer* renderer);
+    void draw(SDL_Renderer* renderer, Tipo tipo);
     bool setActive(bool activo);
     bool getActive () const;
     void setPosition (int x, int y, int h, int w);

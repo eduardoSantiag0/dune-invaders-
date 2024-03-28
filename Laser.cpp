@@ -2,9 +2,8 @@
 #include "Laser.hpp"
 
 
-Laser::Laser() {
-    m_active = true;
-    m_speed = 5;
+Laser::Laser() : m_active(true), m_speed(5) 
+{
 }
 
 void Laser::move(Tipo tipo) {
@@ -22,13 +21,48 @@ void Laser::move(Tipo tipo) {
     }
 }
 
-void Laser::draw(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 160, 47, 64, 255); 
+void Laser::draw(SDL_Renderer* renderer, Tipo tipo) {
+    if (renderer == nullptr) {
+        std::cerr << "Error: Renderer is nullptr in Laser::draw()" << std::endl;
+        return;
+    }
+
+    int red, green, blue;
+    switch (tipo)
+    {
+    case Laser::Tipo::Player:
+        red = 214;
+        green = 50;
+        blue = 45;
+        break;
+    
+    case Laser::Tipo::Alien:
+        red = 20;
+        green = 25;
+        blue = 30;
+        break;
+    
+    default:
+        break;
+    }
+    // // if (tipo == Laser::Tipo::Player) {
+    // //     red = 160;
+    // //     green = 47;
+    // //     blue = 64;
+    // // }
+    // // else if (tipo == Laser::Tipo::Alien) {
+    // //     red = 20;
+    // //     green = 25;
+    // //     blue = 30;
+    // // }
+
+    SDL_SetRenderDrawColor(renderer, red, green, blue, 255); 
+    // SDL_SetRenderDrawColor(renderer, 160, 47, 64, 255); 
     SDL_RenderFillRect(renderer, &m_laser);
 }
 
 bool Laser::setActive(bool activo) {
-    m_active = activo ;
+    m_active = activo;
 }
 
 bool Laser::getActive () const 

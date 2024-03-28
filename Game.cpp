@@ -2,7 +2,7 @@
 #include <iostream>
 #include "SDL2/SDL.h"
 #include <vector>
-#include<cstdlib>
+#include <cstdlib>
 
 #define SCREEN_FPS 30
 
@@ -35,11 +35,7 @@ bool Game::checkColisao(SDL_Rect a, SDL_Rect b) {
 
 std::vector<Dunas> Game::CreateObstacles() 
 {
-    //? Como deixar gaps iguais entre cada Duna?
-    // Calcular o width da Duna
-    // Quantas colunas  o grid tem? grid[0].size() 
     int obstaclesWidth = Dunas::grid[0].size() * 3;
-    // Number of Gap: 4
     float gap = (640 - (4 * obstaclesWidth)) / 5;
 
     for ( int i = 0; i < 4 ; i++) {
@@ -50,10 +46,11 @@ std::vector<Dunas> Game::CreateObstacles()
     return asDunas;
 }
 
-// Cria um Vetor de Aliens
-// Vetor de Aliens = Hakonen
-std::vector<Alien> Game::CreateEnemies() {
+std::vector<Alien> Game::CreateEnemies() 
+{
+    // Vetor de Aliens = Hakonen
     std::vector<Alien> aliens;
+
     for (int row = 0; row < 5; row++) {
         for (int column = 0; column < 11; column ++) {
             int alientype;
@@ -70,13 +67,13 @@ std::vector<Alien> Game::CreateEnemies() {
             aliens.push_back (Alien(alientype, x, y));
         }
     }
+
     return aliens;
 }
 
 Game::Game () 
-    : m_WIDTH_WINDOW(640), m_HEIGHT_WINDOW(480), m_aliensDirection(1) 
+    : m_WIDTH_WINDOW(640), m_HEIGHT_WINDOW(480), m_aliensDirection(1), needsRespawn(false), respawnStartTime(0), player_hp(3)
 {
-    // SDL_Init(SDL_INIT_EVERYTHING);
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "SDL initialization failed: " << SDL_GetError() << std::endl;
         return;
@@ -94,12 +91,18 @@ Game::Game ()
         return;
     }
     SDL_Surface* icon = SDL_LoadBMP("./src/images/icons/dune_v0.1.bmp");
+    if (icon == nullptr) {
+        std::cout << "Nao foi possivel abrir o icone\n";
+        return;
+    }
+
     SDL_SetWindowIcon(m_window, icon);
     SDL_FreeSurface(icon);
 
     m_spaceship = Spaceship(); 
     asDunas = CreateObstacles();
     Harkonens = CreateEnemies();
+    
 
     timeLastAlienFired = 0.0;
     playerLastTimeFired = 0.0;
@@ -117,12 +120,12 @@ void Game::run () {
     const int targetFrameTime = 1000 / SCREEN_FPS;
     Uint32 frameStart;
     int frameTime;
-    
 
 
     bool m_isRuning = true;
     while (m_isRuning)
     {
+
         frameStart = SDL_GetTicks();
         Uint32 currentAlientShootTime = SDL_GetTicks();
         Uint32 playerCurrentShootTime = SDL_GetTicks();
@@ -167,6 +170,7 @@ void Game::run () {
         //
         draw(m_renderer);
 
+
         MoveAliens();
         AlienShoot(currentAlientShootTime);
 
@@ -175,11 +179,10 @@ void Game::run () {
         }
 
 
-        // Atirar
+        //* Player Atirando
         //
-
         for (auto it = lasersVector.begin(); it != lasersVector.end(); ) {
-            it->draw(m_renderer);
+            it->draw(m_renderer, Laser::Tipo::Player);
             it->move(Laser::Tipo::Player);
             if (it->getPos_Y() <= 0) {
                 it = lasersVector.erase(it);
@@ -188,10 +191,10 @@ void Game::run () {
             }
         }
     
-        // Alien Atirando
+        //* Alien Atirando
         //
         for (auto it = alienLasers.begin(); it != alienLasers.end(); ) {
-            it->draw(m_renderer);
+            it->draw(m_renderer, Laser::Tipo::Alien);
             it->move(Laser::Tipo::Alien);
             if (it->getPos_Y() <= 0) {
                 it = alienLasers.erase(it);
@@ -202,19 +205,26 @@ void Game::run () {
 
         verColisoes();
 
+
         SDL_RenderPresent(m_renderer);
         frameTime = SDL_GetTicks() - frameStart;
 
         if (frameTime < targetFrameTime) 
             SDL_Delay(targetFrameTime - frameTime);
         
-        // update();
+        if (player_hp == 0) {
+            SDL_Delay(2000);
+            m_isRuning = false;
+        }
+        
     }
 }
 
 void Game::draw(SDL_Renderer* m_renderer) {
         //* Color BG
-        SDL_SetRenderDrawColor(m_renderer, 250, 187, 100, 255); 
+        SDL_SetRenderDrawColor(m_renderer, 230, 170, 100, 255); 
+        
+        SDL_RenderClear(m_renderer);
 
         //* Draw Spaceship
         m_spaceship.draw(m_renderer);
@@ -231,8 +241,10 @@ void Game::draw(SDL_Renderer* m_renderer) {
 
         //* Laser Inimigo
         for(auto& laser : alienLasers) {
-            laser.draw(m_renderer);
+            laser.draw(m_renderer, Laser::Tipo::Alien);
         }
+
+        drawPlayerHP(m_renderer);
 
 }
 
@@ -240,11 +252,11 @@ void Game::MoveAliens() {
     for (auto& alien : Harkonens) {
         if (alien.getRect().x + alien.getRect().w > m_WIDTH_WINDOW) {
             m_aliensDirection = -1;
-            MoveDownAliens(2);
+            MoveDownAliens(4);
         }
         if (alien.getRect().x < 0) {
             m_aliensDirection = 1;
-            MoveDownAliens(2);
+            MoveDownAliens(4);
         }
         alien.move(m_aliensDirection);
     }
@@ -294,35 +306,35 @@ void Game::verColisoes() {
         bool apagarLaser = false;
         for (auto enemyIterator = Harkonens.begin(); enemyIterator != Harkonens.end() && !apagarLaser;) {
             if (checkColisao(laserPlayerIterator->getRect(), enemyIterator->getRect())) {
-                enemyIterator = Harkonens.erase(enemyIterator); // Erase the alien
-                laserPlayerIterator = lasersVector.erase(laserPlayerIterator); // Erase the laser
+                enemyIterator = Harkonens.erase(enemyIterator); // Apagar alien
+                // laserPlayerIterator = lasersVector.erase(laserPlayerIterator); // Apagar laser
                 apagarLaser = true;
-                break; // Exit the loop since the laser is erased
+                break; // Sair do loop quando ambos forem apagados
             } else {
                 ++enemyIterator;
             }
         }
 
-        // Proceed with obstacle collision only if the laser wasn't erased
-        if (!apagarLaser) {
-            for (auto& obstacle : asDunas) {
-                auto it = obstacle.blocks.begin();
-                while (it != obstacle.blocks.end()) {
-                    if (checkColisao(it->getRect(), laserPlayerIterator->getRect())) {
-                        it = obstacle.blocks.erase(it); // Erase the obstacle block
-                        apagarLaser = true;
-                        laserPlayerIterator = lasersVector.erase(laserPlayerIterator); // Erase the laser
-                        break; // Exit the loop since the laser is erased
-                    } else {
-                        ++it;
-                    }
+        // Player Laser vs Dunas;
+        for (auto& obstacle : asDunas) {
+            auto it = obstacle.blocks.begin();
+            while (it != obstacle.blocks.end()) {
+                if (checkColisao(it->getRect(), laserPlayerIterator->getRect())) {
+                    it = obstacle.blocks.erase(it); 
+                    apagarLaser = true;
+                    // laserPlayerIterator = lasersVector.erase(laserPlayerIterator); 
+                    break; 
+                } else {
+                    ++it;
                 }
-                if (apagarLaser) break; // Exit the loop if the laser was erased after hitting an obstacle
             }
+            if (apagarLaser) break; 
         }
 
-        // Increment the iterator only if no erasure has occurred
-        if (!apagarLaser) {
+        // Aumenta caso o laser não tenha sido apagado
+        if (apagarLaser) {
+            laserPlayerIterator = lasersVector.erase(laserPlayerIterator);
+        } else {
             ++laserPlayerIterator;
         }
     }
@@ -332,24 +344,40 @@ void Game::verColisoes() {
     for (auto alienLaserIt = alienLasers.begin(); alienLaserIt != alienLasers.end();) {
         bool laserRemoved = false;
 
+        //* Alien Laser vs Dunas
         for (auto& obstacle : asDunas) {
             for (auto blockIt = obstacle.blocks.begin(); blockIt != obstacle.blocks.end() && !laserRemoved;) {
-                if (checkColisao(alienLaserIt->getRect(), blockIt->getRect())) {
-                    // Here we erase the block and the laser upon collision
-                    blockIt = obstacle.blocks.erase(blockIt); // Erase the dune block
-                    alienLaserIt = alienLasers.erase(alienLaserIt); // Erase the alien laser
-                    laserRemoved = true; // Mark the laser as removed to skip further checks
-                    break; // Exit the innermost loop since the laser is erased
+                if (checkColisao(alienLaserIt->getRect(), blockIt->getRect())) 
+                {
+                    blockIt = obstacle.blocks.erase(blockIt); 
+                    // alienLaserIt = alienLasers.erase(alienLaserIt); 
+                    laserRemoved = true;
+                    break; 
                 } else {
                     ++blockIt;
                 }
             }
-            if (laserRemoved) break; // Exit the loop if the laser was erased after hitting a block
+            if (laserRemoved) break; 
         }
 
-        if (!laserRemoved) {
-            ++alienLaserIt; // Only increment if no erasure has occurred
+        //* Alien Laser vs Player
+        if (checkColisao(m_spaceship.getRect(), alienLaserIt->getRect())) {
+            m_spaceship.reset();
+            --player_hp;
+            laserRemoved = true;
         }
+
+        //* Alien Laser vs Tamanho da Tela
+        if (alienLaserIt->getRect().h + alienLaserIt->getRect().y  >= m_HEIGHT_WINDOW) {
+                laserRemoved = true; 
+        }
+
+        if (laserRemoved) {
+            alienLaserIt = alienLasers.erase(alienLaserIt);
+        } else {
+            ++alienLaserIt;
+        }
+        // std::cout << "Numero de Laser Alien: " << alienLasers.size() << "\n";
     }
 
     //* Aliens com Objetos
@@ -374,4 +402,18 @@ void Game::verColisoes() {
 
 void Game::GameOver() {
     m_isRuning = false;
+}
+
+
+void Game::drawPlayerHP(SDL_Renderer* renderer) {
+    const int playerHPLocationX = 20; 
+    const int playerHPLocationY = m_HEIGHT_WINDOW - 40; 
+    const int playerHPSpacing = 25;  
+
+    SDL_Texture* heartTexture = TextureManager::LoadTexture("src/images/sprites/heart_pixel_art.png", renderer); // Load heart texture
+
+    for (int i = 0; i < player_hp; ++i) {
+        SDL_Rect heartRect = { playerHPLocationX + i * playerHPSpacing, playerHPLocationY, 20, 20 }; // Position and size of each heart
+        SDL_RenderCopy(renderer, heartTexture, NULL, &heartRect); // Render the heart texture
+    }
 }

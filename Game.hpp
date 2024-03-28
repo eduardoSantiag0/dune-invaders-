@@ -2,8 +2,11 @@
 #include "Spaceship.hpp"
 #include "Laser.hpp"
 #include "vector"
+#include <array>
 #include "Dunas.hpp"
 #include "Alien.hpp"
+// #include "Lives.hpp"
+// #include "TextureManager.hpp"
 // #pragma once
 
 class Game 
@@ -26,6 +29,9 @@ private:
     bool m_isRuning;
     int m_WIDTH_WINDOW;
     int m_HEIGHT_WINDOW;
+
+    SDL_Texture* spaceshipTexture;
+    
     std::vector<Dunas> CreateObstacles();
     std::vector<Alien> CreateEnemies();
     bool checkColisao(SDL_Rect a, SDL_Rect b);
@@ -34,11 +40,21 @@ private:
     void MoveDownAliens(int distance);
     std::vector <Laser> alienLasers;
     void AlienShoot(Uint32 currTime);
-    constexpr static Uint32 alienLaserShootInterval = 1200;
+    constexpr static Uint32 alienLaserShootInterval = 800;
     Uint32 timeLastAlienFired;
     void verColisoes();
     void GameOver();
 
     constexpr static Uint32 playerShootInterval = 1000;
     Uint32 playerLastTimeFired;
+
+    Uint32 respawnStartTime;
+    bool needsRespawn;
+
+    constexpr static Uint32 playerRespawnInterval = 1000;
+
+    int player_hp;
+    // Lives vidas[3];
+    void drawPlayerHP(SDL_Renderer* renderer) ;
+
 };
