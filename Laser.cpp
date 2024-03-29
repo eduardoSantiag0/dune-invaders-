@@ -45,19 +45,8 @@ void Laser::draw(SDL_Renderer* renderer, Tipo tipo) {
     default:
         break;
     }
-    // // if (tipo == Laser::Tipo::Player) {
-    // //     red = 160;
-    // //     green = 47;
-    // //     blue = 64;
-    // // }
-    // // else if (tipo == Laser::Tipo::Alien) {
-    // //     red = 20;
-    // //     green = 25;
-    // //     blue = 30;
-    // // }
 
     SDL_SetRenderDrawColor(renderer, red, green, blue, 255); 
-    // SDL_SetRenderDrawColor(renderer, 160, 47, 64, 255); 
     SDL_RenderFillRect(renderer, &m_laser);
 }
 

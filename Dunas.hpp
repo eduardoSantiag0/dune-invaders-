@@ -11,6 +11,7 @@ public:
     int m_pos_y;
     std::vector<Block> blocks;
     static std::vector<std::vector<int>> grid;
+    
 private:
 
 };

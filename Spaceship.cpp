@@ -30,8 +30,6 @@ void Spaceship::move(int new_pos)
 
 void Spaceship::draw (SDL_Renderer* renderer)
 {
-    // SDL_SetRenderDrawColor(renderer, 78, 250, 195, 255);
-    // SDL_RenderFillRect(renderer, &m_spaceship);
 
     if (!m_spaceshipTexture) { 
         m_spaceshipTexture = getTexture("src/images/sprites/spaceship/spaceship_teste_2.png", renderer);
@@ -53,9 +51,9 @@ void Spaceship::reset()
     m_spaceship.x = 240;
 }
 
-SDL_Texture* Spaceship::getTexture(const char* filepath, SDL_Renderer* renderer) {
+SDL_Texture* Spaceship::getTexture(const char* filepath, SDL_Renderer* renderer) 
+{
     SDL_Texture* spaceshipTexture = TextureManager::LoadTexture(filepath, renderer);
 
     return spaceshipTexture;
-    // return TextureManager::LoadTexture(filepath, renderer);
 }

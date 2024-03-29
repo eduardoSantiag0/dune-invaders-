@@ -5,7 +5,6 @@
 #include <array>
 #include "Dunas.hpp"
 #include "Alien.hpp"
-// #include "Lives.hpp"
 // #include "TextureManager.hpp"
 // #pragma once
 
@@ -40,21 +39,15 @@ private:
     void MoveDownAliens(int distance);
     std::vector <Laser> alienLasers;
     void AlienShoot(Uint32 currTime);
-    constexpr static Uint32 alienLaserShootInterval = 800;
+    constexpr static Uint32 alienLaserShootInterval = 700;
     Uint32 timeLastAlienFired;
     void verColisoes();
     void GameOver();
 
-    constexpr static Uint32 playerShootInterval = 1000;
+    constexpr static Uint32 playerShootInterval = 900;
     Uint32 playerLastTimeFired;
 
-    Uint32 respawnStartTime;
-    bool needsRespawn;
-
-    constexpr static Uint32 playerRespawnInterval = 1000;
-
     int player_hp;
-    // Lives vidas[3];
-    void drawPlayerHP(SDL_Renderer* renderer) ;
-
+    void drawPlayerHP(SDL_Renderer* renderer);
+    void drawBackground(SDL_Renderer* renderer);
 };

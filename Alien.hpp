@@ -13,6 +13,7 @@ private:
     int m_red; 
     int m_green; 
     int m_blue; 
+    
 public: 
     Alien(int m_type, int pos_x, int pos_y);
     SDL_Rect m_alien;

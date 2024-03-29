@@ -6,73 +6,8 @@
 
 #define SCREEN_FPS 30
 
-bool Game::checkColisao(SDL_Rect a, SDL_Rect b) {
-    int leftA, leftB, rightA, rightB, topA, topB, bottomA, bottomB;
-
-    leftA = a.x;
-    rightA = a.x + a.w;
-    topA = a.y;
-    bottomA = a.y + a.h;
-
-    leftB = b.x;
-    rightB = b.x + b.w;
-    topB = b.y;
-    bottomB = b.y + b.h;
-
-    //* Cenário em que não tem colisão 
-    // Um dos lados de A estão fora de B
-    // 
-    if( bottomA <= topB || topA >= bottomB || rightA <= leftB ||  leftA >= rightB ) {
-        return false;
-    }
-
-
-    //* Tem colisao
-    // Nenhum dos lados de A estão fora de B;
-    //
-    return true;
-}
-
-std::vector<Dunas> Game::CreateObstacles() 
-{
-    int obstaclesWidth = Dunas::grid[0].size() * 3;
-    float gap = (640 - (4 * obstaclesWidth)) / 5;
-
-    for ( int i = 0; i < 4 ; i++) {
-        float offsetX = (i + 1) * gap + i * obstaclesWidth;
-        asDunas.push_back(Dunas (offsetX, 380 - 100));
-    }
-
-    return asDunas;
-}
-
-std::vector<Alien> Game::CreateEnemies() 
-{
-    // Vetor de Aliens = Hakonen
-    std::vector<Alien> aliens;
-
-    for (int row = 0; row < 5; row++) {
-        for (int column = 0; column < 11; column ++) {
-            int alientype;
-            if (row == 0) {
-                alientype = 3;
-            } else if (row == 1 ||  row == 2) {
-                alientype = 2;
-            } else {
-                alientype = 1;
-            }
-            
-            float x = 25 + column * 30;
-            float y = 55 + row * 20;
-            aliens.push_back (Alien(alientype, x, y));
-        }
-    }
-
-    return aliens;
-}
-
 Game::Game () 
-    : m_WIDTH_WINDOW(640), m_HEIGHT_WINDOW(480), m_aliensDirection(1), needsRespawn(false), respawnStartTime(0), player_hp(3)
+    : m_WIDTH_WINDOW(640), m_HEIGHT_WINDOW(480), m_aliensDirection(1), player_hp(3)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "SDL initialization failed: " << SDL_GetError() << std::endl;
@@ -406,14 +341,80 @@ void Game::GameOver() {
 
 
 void Game::drawPlayerHP(SDL_Renderer* renderer) {
-    const int playerHPLocationX = 20; 
-    const int playerHPLocationY = m_HEIGHT_WINDOW - 40; 
+    const int playerHP_PosX = 20; 
+    const int playerHP_PosY = m_HEIGHT_WINDOW - 60; 
     const int playerHPSpacing = 25;  
 
-    SDL_Texture* heartTexture = TextureManager::LoadTexture("src/images/sprites/heart_pixel_art.png", renderer); // Load heart texture
+    SDL_Texture* heartTexture = TextureManager::LoadTexture("src/images/sprites/rank055.png", renderer); 
 
     for (int i = 0; i < player_hp; ++i) {
-        SDL_Rect heartRect = { playerHPLocationX + i * playerHPSpacing, playerHPLocationY, 20, 20 }; // Position and size of each heart
-        SDL_RenderCopy(renderer, heartTexture, NULL, &heartRect); // Render the heart texture
+        SDL_Rect heartRect = { playerHP_PosX + i * playerHPSpacing, playerHP_PosY, 40, 40 }; 
+        SDL_RenderCopy(renderer, heartTexture, NULL, &heartRect); 
     }
+}
+
+
+
+bool Game::checkColisao(SDL_Rect a, SDL_Rect b) {
+    int leftA, leftB, rightA, rightB, topA, topB, bottomA, bottomB;
+
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+
+    //* Cenário em que não tem colisão 
+    // Um dos lados de A estão fora de B
+    // 
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB ||  leftA >= rightB ) {
+        return false;
+    }
+
+
+    //* Tem colisao
+    // Nenhum dos lados de A estão fora de B;
+    //
+    return true;
+}
+
+std::vector<Dunas> Game::CreateObstacles() 
+{
+    int obstaclesWidth = Dunas::grid[0].size() * 3;
+    float gap = (640 - (4 * obstaclesWidth)) / 5;
+
+    for ( int i = 0; i < 4 ; i++) {
+        float offsetX = (i + 1) * gap + i * obstaclesWidth;
+        asDunas.push_back(Dunas (offsetX, 380 - 100));
+    }
+
+    return asDunas;
+}
+
+std::vector<Alien> Game::CreateEnemies() 
+{
+    std::vector<Alien> aliens;
+
+    for (int row = 0; row < 5; row++) {
+        for (int column = 0; column < 11; column ++) {
+            int alientype;
+            if (row == 0) {
+                alientype = 3;
+            } else if (row == 1 ||  row == 2) {
+                alientype = 2;
+            } else {
+                alientype = 1;
+            }
+            
+            float x = 25 + column * 30;
+            float y = 55 + row * 20;
+            aliens.push_back (Alien(alientype, x, y));
+        }
+    }
+
+    return aliens;
 }

@@ -8,10 +8,13 @@ private:
     bool m_active;
 
 public:
-    enum class Tipo {
+
+    enum class Tipo 
+    {
         Player,
         Alien
     };
+
     Laser();
     void move (Tipo tipo);
     void draw(SDL_Renderer* renderer, Tipo tipo);
