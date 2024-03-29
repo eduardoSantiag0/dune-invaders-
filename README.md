@@ -1,7 +1,7 @@
 # Dune Invaders 🏜️
 
 
-![Dune_Invaders_Logo](src\images\icons\hr_giger2.bmp)
+![Dune_Invaders_Logo](src/images/icons/hr_giger2.bmp)
 
  
 Welcome to Arrakis! This is a retro-style game inspired by the classic Space Invaders game, set in the universe of Frank Herbert's "Dune". In this game, you'll find yourself defending the desert planet of Arrakis against waves of invading enemy ships. 
