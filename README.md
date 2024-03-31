@@ -17,9 +17,23 @@ While many Fremen embark on the Holy War, a select few remain behind to protect 
 ## Controls 🎮
 ### **Goal**: Destroy all Harkonens spaceships 
 - Use the left and right arrow keys to move the spaceship horizontally.
-- Press the spacebar to shoot lasers at Harkonne's ships.
+- Press the spacebar to shoot lasers at Harkonnen's ships.
 
 <br>
+
+# Screenshots and Sprites
+
+![Fremen_Spaceship_Sprite](src\images\screenshots\DuneInvaders_Gameplay.png)
+
+### The Fremen's Spaceship uses the Atreides House logo as a symbol of fidelity to Paul
+
+<br>
+
+
+
+![Fremen_Spaceship_Sprite](src/images/screenshots/spaceship_sprite_screenshot.png)
+
+
 
 # Installation: 
 1. Clone this repo: ```git clone https://github.com/your-username/space-invaders-dune.git ``` 

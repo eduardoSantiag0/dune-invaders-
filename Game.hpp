@@ -28,6 +28,11 @@ private:
     bool m_isRuning;
     int m_WIDTH_WINDOW;
     int m_HEIGHT_WINDOW;
+    
+    
+    SDL_Rect m_background;
+    SDL_Texture* background_texture;
+    SDL_Texture* loadBackground(const char* filepath, SDL_Renderer* renderer);
 
     SDL_Texture* spaceshipTexture;
     
@@ -49,5 +54,4 @@ private:
 
     int player_hp;
     void drawPlayerHP(SDL_Renderer* renderer);
-    void drawBackground(SDL_Renderer* renderer);
 };

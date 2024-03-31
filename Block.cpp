@@ -5,7 +5,8 @@ Block::Block (int m_pos_x, int m_pos_y) {
 }
 
 void Block::draw (SDL_Renderer* render) {
-    SDL_SetRenderDrawColor(render, 253, 114, 78, 255);
+    // SDL_SetRenderDrawColor(render, 253, 114, 78, 255);
+    SDL_SetRenderDrawColor(render, 239, 114, 45, 255);
     SDL_RenderFillRect(render, &rectangulo);
 }
 

@@ -7,7 +7,7 @@
 #define SCREEN_FPS 30
 
 Game::Game () 
-    : m_WIDTH_WINDOW(640), m_HEIGHT_WINDOW(480), m_aliensDirection(1), player_hp(3)
+    : m_WIDTH_WINDOW(640), m_HEIGHT_WINDOW(480), m_aliensDirection(1), player_hp(3), background_texture(nullptr)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "SDL initialization failed: " << SDL_GetError() << std::endl;
@@ -33,6 +33,8 @@ Game::Game ()
 
     SDL_SetWindowIcon(m_window, icon);
     SDL_FreeSurface(icon);
+
+    m_background = {0, 0, m_WIDTH_WINDOW, m_HEIGHT_WINDOW };
 
     m_spaceship = Spaceship(); 
     asDunas = CreateObstacles();
@@ -157,9 +159,14 @@ void Game::run () {
 
 void Game::draw(SDL_Renderer* m_renderer) {
         //* Color BG
-        SDL_SetRenderDrawColor(m_renderer, 230, 170, 100, 255); 
-        
+    
+        // SDL_SetRenderDrawColor(m_renderer, 230, 170, 100, 255);
         SDL_RenderClear(m_renderer);
+
+        if (!background_texture)
+            background_texture = loadBackground("src/images/sprites//BG/bg_dune_invaders_3.png", m_renderer);
+        
+        SDL_RenderCopy(m_renderer, background_texture, NULL, &m_background);        
 
         //* Draw Spaceship
         m_spaceship.draw(m_renderer);
@@ -417,4 +424,10 @@ std::vector<Alien> Game::CreateEnemies()
     }
 
     return aliens;
+}
+
+
+SDL_Texture*  Game::loadBackground(const char* filepath, SDL_Renderer* renderer) {
+    SDL_Texture* tex = TextureManager::LoadTexture(filepath, renderer);
+    return tex;
 }
