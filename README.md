@@ -23,7 +23,7 @@ While many Fremen embark on the Holy War, a select few remain behind to protect 
 
 # Screenshots and Sprites
 
-![Fremen_Spaceship_Sprite](src\images\screenshots\DuneInvaders_Gameplay.png)
+![Fremen_Spaceship_Sprite](src/images/screenshots/DuneInvaders_Gameplay.png)
 
 ### The Fremen's Spaceship uses the Atreides House logo as a symbol of fidelity to Paul
 
