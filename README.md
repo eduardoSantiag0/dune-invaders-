@@ -4,7 +4,7 @@
 ![Dune_Invaders_Logo](src/images/icons/hr_giger2.bmp)
 
  
-Welcome to Arrakis! This is a retro-style game inspired by the classic Space Invaders game, set in the universe of Frank Herbert's "Dune". In this game, you'll find yourself defending the desert planet of Arrakis against waves of invading enemy ships. 
+Welcome to **Arrakis**! This is a retro-style game inspired by the classic Space Invaders game, set in the universe of Frank Herbert's "Dune". In this game, you'll find yourself defending the desert planet of Arrakis against waves of invading enemy ships. 
 
 This is a personal project aimed at learning Object-Oriented Programming (OOP) concepts and game development.
 
@@ -25,13 +25,13 @@ While many Fremen embark on the Holy War, a select few remain behind to protect 
 
 ![Fremen_Spaceship_Sprite](src/images/screenshots/DuneInvaders_Gameplay.png)
 
-### The Fremen's Spaceship uses the Atreides House logo as a symbol of fidelity to Paul
 
 <br>
 
 
 
 ![Fremen_Spaceship_Sprite](src/images/screenshots/spaceship_sprite_screenshot.png)
+#### The Fremen's Spaceship uses the Atreides House logo as a symbol of fidelity to Paul
 
 
 

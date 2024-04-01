@@ -49,7 +49,7 @@ private:
     void verColisoes();
     void GameOver();
 
-    constexpr static Uint32 playerShootInterval = 900;
+    constexpr static Uint32 playerShootInterval = 700;
     Uint32 playerLastTimeFired;
 
     int player_hp;
